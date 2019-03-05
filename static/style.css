@@ -1,0 +1,141 @@
+* {
+	font-family: "Helvetica Neue Bold", Roboto, Helvetica, Arial, sans-serif;
+	font-weight: 700;
+}
+       
+* {             
+    box-sizing: border-box;
+}
+
+
+
+/* Style the header */
+.header {
+  background-color: #f1f1f1;
+  padding: 50px;
+  text-align: center;
+  font-size: 35px;
+  font-family: "Inconsolata"
+}
+.bgimg {
+  background-position: center;
+  background-size: auto;
+  background-image: url("http://www.sdso.net/wp-content/uploads/2015/03/sports-balls.jpg");
+  min-height: 50%;
+}
+
+
+.column {
+  float: left;
+  padding: 10px;
+  width: 948px;
+  height: max-content; 
+}
+
+
+.glyphicon {
+	margin-right: 10px;
+}
+.banner.menu {
+	height: 150px;
+	background-color: #E1E17F;
+}
+/* Left and right column */
+.column.side {
+  width: 25%;
+  height: max-content;
+}
+
+/* Middle column */
+.column.middle {
+  width: 75%;
+  height: max-content;
+}
+.text-white{
+    color:#bbb!important
+}
+
+/* Style the top navigation bar */
+.topnav {
+    overflow: hidden;
+    background-color: #333;
+  }
+  
+  /* Style the topnav links */
+.topnav a {
+    float: left;
+    display: block;
+    color: #f2f2f2;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+  }
+  .clearer {
+    clear: both;
+  }
+  /* Change color on hover */
+.topnav a:hover {
+    background-color: #ddd;
+    color: black;
+  }
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+div button {
+    float: right;
+    position: absolute;
+    right: 10px;
+    top: 15px;
+    background-color: #f1f1f1;
+}
+/* Style the footer */
+.footer {
+  background-color: #f1f1f1;
+  padding: 10px;
+  text-align: center;
+}
+
+/*style fixed widht columns*/
+* {
+	margin:0;
+	padding:0;
+	border:0;
+}
+#wrapper {
+	border: 0px solid #000;
+	width: 950px;
+	margin: auto;
+}
+#header {
+	border-bottom: 1px solid #000;
+	padding: 10px;
+	background-color: #eee;
+}
+#menu {
+	width: 180px;
+	float: left;
+	padding: 10px;
+}
+#content {
+	margin-left: 200px;
+	padding: 10px;
+	line-height: 2em;
+}
+.clearer {
+	clear: both;
+}
+
+.flash {
+	background-color:#bbb;
+	width:100%;
+	text-decoration: none;
+
+}
+
+.flash li {
+	list-style-type: none;
+	text-align: center;
+
+}

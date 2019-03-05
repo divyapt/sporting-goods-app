@@ -1,0 +1,28 @@
+{% extends "main.html" %}
+{% block content %}
+{% include "edit_header.html" %}
+
+<div id="wrapper">
+
+
+    <!-- Header with image -->
+    <header class="bgimg header" id="home">
+
+        <div>
+            <span class="text-white" style="font-size:50px">Sporting<br>Goods</span>
+        </div>
+
+    </header>
+    <div class="column" style="background-color:rgb(228, 228, 171);">
+        <h2>{{item.name}}</h2>
+
+        <div>
+            <p>{{item.description}}</p>
+
+        </div>
+
+
+    </div>
+
+
+    {% endblock %}

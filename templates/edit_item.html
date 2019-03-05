@@ -1,0 +1,40 @@
+{% extends "main.html" %}
+{% block content %}
+{% include "edit_header.html" %}
+
+
+<div id="wrapper">
+    <div class="column" style="background-color:#E1E17F;">
+        <dd>
+            <h1> Edit Item </h1>
+        </dd>
+
+        <form action="{{ url_for('editCatalogItem',item_id = item.id)}}" method='post'>
+
+            <dl>
+                <dd>Title</dd>
+                <dd><input type='text' size='30' name='name' placeholder='{{item.name }}'></dd>
+                <br>
+                <dd>Description</dd>
+                <dd><textarea name='description' rows='5' cols='40' placeholder='{{item.description }}'></textarea></dd>
+                <br>
+                <dd>Category</dd>
+                <dd>
+                    <select name="catalog_name" class="selectpicker form-control">
+                        {% for catalog in catalogs %}
+                        <option value="{{ catalog.id }}">{{ catalog.name }}</option>
+                        {% endfor %}
+                    </select>
+                </dd>
+
+            </dl>
+
+
+            <dd><input type='submit' value='Submit'></dd>
+
+        </form>
+    </div>
+
+
+</div>
+{% endblock %}

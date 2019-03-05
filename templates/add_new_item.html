@@ -1,0 +1,43 @@
+{% extends "main.html" %}
+{% block content %}
+{% include "edit_header.html" %}
+
+
+<div id="wrapper">
+    <div class="column" style="background-color:#E1E17F;">
+        <dd>
+            <h1> Add new Item </h1>
+        </dd>
+        <form action="{{ url_for('addNewCatalogItem')}}" method='post'>
+
+            <dl>
+                <dd>Item name</dd>
+                <dd><input type='text' size='30' name='name'></dd>
+                <br>
+                <dd>Description</dd>
+                <dd><textarea name='description' rows='5' cols='40'></textarea></dd>
+                <br>
+                <dd>Category</dd>
+                <dd>
+                    <select name="catalog_name" class="selectpicker form-control">
+                        {% for catalog in catalogs %}
+                        <option value="{{ catalog.id }}">{{ catalog.name }}</option>
+                        {% endfor %}
+                    </select>
+                </dd>
+
+            </dl>
+
+
+            <dd><input type='submit' value='Submit'></dd>
+            &nbsp;
+            &nbsp;
+            <dd><a href="{{url_for('showCatalog')}}"> Cancel </a></dd>
+        </form>
+
+    </div>
+</div>
+
+
+</div>
+{% endblock %}

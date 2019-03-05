@@ -1,0 +1,24 @@
+{% extends "main.html" %}
+{% block content %}
+{% include "edit_header.html" %}
+
+
+<div id="wrapper">
+    <div class="column" style="background-color:#E1E17F;">
+        <dd>
+            <h1> Delete Item</h1>
+        </dd>
+        <dd>
+            <h3> Are you sure you want to delete {{item.name}}? </h3>
+        </dd>
+
+        <form action="{{ url_for('deleteCatalogItem', item_id=item.id)}}" method='post'>
+
+            <dd><input type='submit' , value='Delete'></dd>
+
+        </form>
+
+        <dd><a href="{{url_for('showCatalog')}}"> Cancel </a></dd>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends "main.html" %}
+{% block content %}
+{% include "edit_header.html" %}
+
+
+<div id="wrapper">
+
+
+    <!-- Header with image -->
+    <header class="bgimg header" id="home">
+
+        <div>
+            <span class="text-white" style="font-size:50px">Sporting<br>Goods</span>
+        </div>
+
+    </header>
+
+    <div class="column" style="background-color:rgb(228, 228, 171);">
+        <h2>{{item.name}}</h2>
+
+        <div>
+            <P>{{item.description}}</p>
+            <div class="editdeletepane">
+
+                <a href="{{url_for('editCatalogItem',item_id = item.id)}}">Edit</a>
+                &nbsp;
+                <a href="{{url_for('deleteCatalogItem',item_id = item.id)}}">Delete</a>
+            </div>
+
+        </div>
+
+
+
+    </div>
+    {% endblock %}
