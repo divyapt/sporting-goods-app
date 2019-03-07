@@ -16,6 +16,8 @@ import httplib2
 import json
 from flask import make_response
 import requests
+# imports for desining the function decorator
+from functools import wraps
 
 app = Flask(__name__)
 
@@ -116,7 +118,6 @@ def gconnect():
     # Check if user exists in the database, if not,
     # persists the user in the database
     user_id = getUserID(data['email'])
-    print("***************** USER ID {}").format(user_id)
     if not user_id:
         user_id = createUser(login_session)
     login_session['user_id'] = user_id
@@ -171,6 +172,11 @@ def gdisconnect():
 
 # User Helper Functions
 def createUser(login_session):
+    """ Creates a new user in the database.
+    Args:
+        login_Session (dict): session object with user data.
+    Returns:
+        user_id (int): disticnt integer value identifying the newly created user"""
     newUser = User(name=login_session['username'], email=login_session[
                    'email'], picture=login_session['picture'])
     session.add(newUser)
@@ -180,18 +186,39 @@ def createUser(login_session):
 
 
 def getUserInfo(user_id):
-    print("********* {} ************").format(user_id)
+    """ Get user info from the database.
+    Args:
+        user_id (int): user id to be queried from the database.
+    Returns:
+        user (User): user object retrieved from the database"""
     user = session.query(User).filter_by(id=user_id).one()
     return user
 
 
 def getUserID(email):
+    """ Get the user id from the database for the given email.
+    Args:
+        email (str): email.
+    Returns:
+        user_id (int): disticnt integer value identifying the User retrieved 
+                       from the database for the given email."""
     try:
         user = session.query(User).filter_by(email=email).one()
         return user.id
     except Exception as err:
-        print('User not found: %s\nError: %s' % (query, str(err)))
+        print('User not found: %s' % (str(err)))
         return None
+
+# decorator function to check if users are authorised
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'username' in login_session:
+            return f(*args, **kwargs)
+        else:
+            flash("You are not allowed to access there")
+            return redirect('/login')
+    return decorated_function
 
 
 # JSON APIs to view Catalog Information
@@ -219,7 +246,6 @@ def catalogsJSON():
 @app.route('/')
 @app.route('/catalog/')
 def showCatalog():
-    print("LOGIN SESSION:************ {}").format(login_session)
     catalogs = session.query(Catalog)
     items = session.query(CatalogItem)
     if 'username' not in login_session:
@@ -246,8 +272,6 @@ def showCatalogItemDescription(catalog_id, item_id):
     item = session.query(CatalogItem).filter_by(
         catalog_id=catalog.id).filter_by(id=item_id).one()
     creator = getUserInfo(item.user_id)
-    print("show login session: {} and user is= {}".format(
-        login_session, creator.id))
     if ('username' not in login_session or
        creator.id != login_session['user_id']):
         return render_template('public_item_desc.html', item=item)
@@ -257,11 +281,9 @@ def showCatalogItemDescription(catalog_id, item_id):
 
 # Edit the selected item
 @app.route('/catalog/item/new', methods=['GET', 'POST'])
+@login_required
 def addNewCatalogItem():
-    if 'username' not in login_session:
-        return redirect('/login')
     catalogs = session.query(Catalog)
-
     if request.method == 'POST':
         newItem = CatalogItem(name=request.form['name'],
                               description=request.form['description'],
@@ -277,11 +299,10 @@ def addNewCatalogItem():
 
 # Edit the selected item
 @app.route('/catalog/<int:item_id>/edit', methods=['GET', 'POST'])
+@login_required
 def editCatalogItem(item_id):
     catalogs = session.query(Catalog)
     editedItem = session.query(CatalogItem).filter_by(id=item_id).one()
-    if 'username' not in login_session:
-        return redirect('/login')
     if editedItem.user_id != login_session['user_id']:
         return '''<script>function myFunction() {alert('You are not
                 authorized to edit this Catalog item,. Please create
@@ -306,10 +327,9 @@ def editCatalogItem(item_id):
 
 # Delete the selected item
 @app.route('/catalog/<int:item_id>/delete', methods=['GET', 'POST'])
+@login_required
 def deleteCatalogItem(item_id):
     itemToDelete = session.query(CatalogItem).filter_by(id=item_id).one()
-    if 'username' not in login_session:
-        return redirect('/login')
     if itemToDelete.user_id != login_session['user_id']:
         return '''<script>function myFunction() {alert('You are not
                authorized to delete this Catalog item,. Please create
