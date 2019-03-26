@@ -4,7 +4,7 @@
 
 
 <div id="wrapper">
-    <div class="column" style="background-color:#E1E17F;">
+    <div class="column">
         <dd>
             <h1> Add new Item </h1>
         </dd>
@@ -29,10 +29,11 @@
             </dl>
 
 
-            <dd><input type='submit' value='Submit'></dd>
-            &nbsp;
-            &nbsp;
-            <dd><a href="{{url_for('showCatalog')}}"> Cancel </a></dd>
+            <dd>
+                <button type='submit' value='Submit' class="btn">
+                    <span class="glyphicon entypo-check" aria-hidden="true"></span> Save
+                </button>
+            </dd>
         </form>
 
     </div>

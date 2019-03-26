@@ -1,14 +1,54 @@
+
+@import url(http://weloveiconfonts.com/api/?family=entypo|maki|typicons);
+
+/* entypo */
+[class*="entypo-"]:before {
+  font-family: 'entypo', sans-serif;
+}
+
+/* maki */
+[class*="maki-"]:before {
+  font-family: 'maki', sans-serif;
+}
+
+/* typicons */
+[class*="typicons-"]:before {
+  font-family: 'Typicons', sans-serif;
+}
+
+.additem_button{
+  width: 100%;
+  margin-top: 20px;
+  font-size: 16px;
+}
 * {
 	font-family: "Helvetica Neue Bold", Roboto, Helvetica, Arial, sans-serif;
-	font-weight: 700;
+  font-weight: 700;
 }
        
 * {             
     box-sizing: border-box;
 }
 
+img, embed,
+object, video {
+  max-width: 100%;
+}
+header, nav, footer, section, article, div {
+  box-sizing: border-box;
+}
 
-
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.container{
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  height: 100%;
+}
 /* Style the header */
 .header {
   background-color: #f1f1f1;
@@ -20,21 +60,25 @@
 .bgimg {
   background-position: center;
   background-size: auto;
-  background-image: url("http://www.sdso.net/wp-content/uploads/2015/03/sports-balls.jpg");
+  background-image: url("http://coastsportstoday.com/wp-content/uploads/2018/01/sports-balls.jpg");
   min-height: 50%;
+  
 }
 
 
 .column {
   float: left;
   padding: 10px;
-  width: 948px;
-  height: max-content; 
+  width: 100%;
+  height: max-content;
+  box-sizing: border-box;
+  background-color:rgb(211, 211, 210);
 }
 
 
 .glyphicon {
-	margin-right: 10px;
+  margin-right: 5px;
+  
 }
 .banner.menu {
 	height: 150px;
@@ -59,6 +103,7 @@
 .topnav {
     overflow: hidden;
     background-color: #333;
+    width:100%;
   }
   
   /* Style the topnav links */
@@ -83,13 +128,85 @@
   display: table;
   clear: both;
 }
-div button {
-    float: right;
-    position: absolute;
-    right: 10px;
-    top: 15px;
-    background-color: #f1f1f1;
+.btn {
+  margin-left: 10px;
+	border-color: #9FB80A;
+	border-width: 2px;
+	color: #9FB80A;;
 }
+.btn:hover {
+	border-color: #9FB80A;
+}
+.btn.delete {
+	border-color: #aaaaaa;
+	color: #aaaaaa;
+}
+.btn.delete:hover {
+	border-color: #aaaaaa;
+	color: red;
+}
+
+/*
+ * Item description
+ *
+ */
+ .item_desc article {
+  box-sizing: border-box;
+  background-color: #000;
+  background-color: rgba(0, 0, 0, 0.7);
+  position: absolute;
+  bottom: 0;
+  height: max-content;
+  width: 100%;
+  color: #fff;
+  padding: 10px;
+}
+/*
+ *
+ * Top News
+ *
+ */
+
+ .cat-list{
+  border-bottom: 1px solid #E0E0E0;
+  padding: 1em;
+  width:50%;
+}
+
+.cat__title {
+  font-weight: 300;
+  border-bottom: 1px solid #E0E0E0;
+  line-height: 24px;
+  font-size: 16px;
+}
+
+.cat-list__item {
+  border-bottom: 1px solid #E0E0E0;
+  padding: 1em 0;
+  line-height: 19.2px;
+}
+
+.cat-list__item:before {
+  content: "» ";
+}
+
+.cat-list__item:last-child {
+  border-bottom: none;
+}
+
+.cat-list__item a {
+  text-decoration: none;
+  color: #666;
+  padding-top: 1.5em;
+  padding-bottom: 1.5em;
+}
+
+.cat-list__item a:hover,
+.cat-list__item a:active {
+  text-decoration: underline;
+}
+
+
 /* Style the footer */
 .footer {
   background-color: #f1f1f1;
@@ -105,7 +222,7 @@ div button {
 }
 #wrapper {
 	border: 0px solid #000;
-	width: 950px;
+	width: 100%;
 	margin: auto;
 }
 #header {
@@ -114,7 +231,7 @@ div button {
 	background-color: #eee;
 }
 #menu {
-	width: 180px;
+	width: 100%;
 	float: left;
 	padding: 10px;
 }
@@ -129,7 +246,7 @@ div button {
 
 .flash {
 	background-color:#bbb;
-	width:100%;
+	max-width:100%;
 	text-decoration: none;
 
 }

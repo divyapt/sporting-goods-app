@@ -27,41 +27,44 @@
 
     </div>
 
-    <div id="main" style="background-color:rgb(228, 228, 171);">
+    <div class="container">
+        <section class="cat-list">
+            <h2 class="cat__title">Categories</h2>
+            <ul>
+                {% for catalog in catalogs %}
 
-        <div id="menu">
-            <h2>Cagtegories</h2>
-            {% for catalog in catalogs %}
+                <li class="cat-list__item">
 
-            <div>
+                    <a href="{{url_for('showCatalogItems', catalog_id = catalog.id)}}">
+                        {{catalog.name}}
+                    </a>
 
-                <a href="{{url_for('showCatalogItems', catalog_id = catalog.id)}}">
-                    <h3>{{catalog.name}}</h3>
-                </a>
-
-            </div>
-
-
-            {% endfor %}
-
-        </div>
-        <div id="content">
-
-            <h2>Latest Items</h2>
-
-            {% for item in items %}
-
-            <div>
-
-                <a href="{{url_for('showCatalogItemDescription', catalog_id = item.catalog.id, item_id = item.id)}}">
-                    <h3>{{item.name}} ({{item.catalog.name}})</h3>
-                </a>
-
-            </div>
+                </li>
 
 
-            {% endfor %}
-        </div>
+                {% endfor %}
+
+            </ul>
+        </section>
+        <section class="cat-list">
+            <h2 class="cat__title">Latest Items</h2>
+            <ul>
+                {% for item in items %}
+
+                <li class="cat-list__item">
+
+                    <a href="{{url_for('showCatalogItemDescription', catalog_id = item.catalog.id, item_id = item.id)}}">
+                        {{item.name}} ({{item.catalog.name}})
+                    </a>
+
+                </li>
+
+
+                {% endfor %}
+
+            </ul>
+        </section>
+
 
         <div class="clearer"></div>
     </div>

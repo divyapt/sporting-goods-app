@@ -3,67 +3,78 @@
 {% include "header.html" %}
 
 
-<!-- Header with image -->
-<header class="bgimg header" id="home">
+<div id="wrapper">
 
-    <div>
-        <span class="text-white" style="font-size:50px">Sporting<br>Goods</span>
-    </div>
-
-</header>
-<div class='flash'>
-    {% with messages = get_flashed_messages() %}
-    {% if messages %}
-
-    <ul>
-        {% for message in messages %}
-        <li> <strong> {{ message }} </strong> </li>
-        {% endfor %}
-    </ul>
-    {% endif %}
-    {% endwith %}
-
-</div>
-<div id="main" style="background-color:rgb(228, 228, 171);">
-
-    <div id="menu">
-        <h2>Cagtegories</h2>
-        {% for catalog in catalogs %}
+    <!-- Header with image -->
+    <header class="bgimg header" id="home">
 
         <div>
-
-            <a href="{{url_for('showCatalogItems', catalog_id = catalog.id)}}">
-                <h3>{{catalog.name}}</h3>
-            </a>
-
+            <span class="text-white" style="font-size:50px">Sporting<br>Goods</span>
         </div>
 
+    </header>
+    <div class='flash'>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
 
-        {% endfor %}
+        <ul>
+            {% for message in messages %}
+            <li> <strong> {{ message }} </strong> </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% endwith %}
 
     </div>
-    <div id="content">
 
-        <h2>Latest Items</h2>
-        <a href="{{url_for('addNewCatalogItem')}}">
-            Add new Item
-        </a>
-        {% for item in items %}
+    <div class="container">
+        <section class="additem_button">
+            <a href="{{url_for('addNewCatalogItem')}}" class="btn">
 
-        <div>
+                <span class="glyphicon maki-tennis" aria-hidden="true"></span> Add Sport Item
 
-            <a href="{{url_for('showCatalogItemDescription', catalog_id = item.catalog.id, item_id = item.id)}}">
-                <h3>{{item.name}} ({{item.catalog.name}})</h3>
             </a>
+        </section>
+        <section class=" cat-list">
+            <h2 class="cat__title">Categories</h2>
+            <ul>
+                {% for catalog in catalogs %}
 
-        </div>
+                <li class="cat-list__item">
+
+                    <a href="{{url_for('showCatalogItems', catalog_id = catalog.id)}}">
+                        {{catalog.name}}
+                    </a>
+
+                </li>
 
 
-        {% endfor %}
+                {% endfor %}
+
+            </ul>
+        </section>
+        <section class="cat-list">
+            <h2 class="cat__title">Latest Items</h2>
+            <ul>
+                {% for item in items %}
+
+                <li class="cat-list__item">
+
+                    <a href="{{url_for('showCatalogItemDescription', catalog_id = item.catalog.id, item_id = item.id)}}">
+                        {{item.name}} ({{item.catalog.name}})
+                    </a>
+
+                </li>
+
+
+                {% endfor %}
+
+            </ul>
+        </section>
+
+
+        <div class="clearer"></div>
     </div>
-
-    <div class="clearer"></div>
-</div>
 
 </div>
 {% endblock %}

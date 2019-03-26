@@ -4,21 +4,24 @@
 
 
 <div id="wrapper">
-    <div class="column" style="background-color:#E1E17F;">
+    <div class="column">
         <dd>
             <h1> Delete Item</h1>
         </dd>
         <dd>
-            <h3> Are you sure you want to delete {{item.name}}? </h3>
+            <h2 class="cat__title"> Are you sure you want to delete {{item.name}}? </h2>
         </dd>
 
         <form action="{{ url_for('deleteCatalogItem', item_id=item.id)}}" method='post'>
 
-            <dd><input type='submit' , value='Delete'></dd>
+            <button type="submit" class="btn btn-default" id="submit" type="submit">
+                <span class="glyphicon typicons-delete" aria-hidden="true"></span>Delete</button>
+
 
         </form>
 
-        <dd><a href="{{url_for('showCatalog')}}"> Cancel </a></dd>
+
+
     </div>
 </div>
 {% endblock %}

@@ -18,6 +18,13 @@ from flask import make_response
 import requests
 # imports for desining the function decorator
 from functools import wraps
+import logging
+import logging.config
+
+logging.config.fileConfig('logging.conf')
+
+# create logger
+logger = logging.getLogger('CatalogApp')
 
 app = Flask(__name__)
 
@@ -31,12 +38,16 @@ session = DBSession()
 
 CLIENT_ID = json.loads(
     open('client_secrets.json', 'r').read())['web']['client_id']
-APPLICATION_NAME = "CatalogItemsApp"
+APPLICATION_NAME = "SportingGoodsApp"
 
 
 # Create anti-forgery state token
 @app.route('/login')
 def showLogin():
+    """ Renders the login template the login page
+    Returns:
+        Returns login html template for users to login"""
+    logger.debug("Redirecting to login page")    
     state = ''.join(random.choice(string.ascii_uppercase + string.digits)
                     for x in xrange(32))
     login_session['state'] = state
@@ -45,6 +56,13 @@ def showLogin():
 
 @app.route('/gconnect', methods=['POST'])
 def gconnect():
+    """ Logic to authenticate the user, after pressing the login button 
+        on login page. Adds the user to the database if he is 
+        the new user.
+    Returns:
+        Returns login success page if user is authenticated, else returns 
+        a response page with the appropriate error message"""
+    logger.info("Validating login")
     # Validate state token
     if request.args.get('state') != login_session['state']:
         response = make_response(json.dumps('Invalid state parameter.'), 401)
@@ -66,12 +84,16 @@ def gconnect():
 
     # Check that the access token is valid.
     access_token = credentials.access_token
+    logger.info("access token: {}".format(access_token))
     url = ('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=%s'
            % access_token)
+    logger.info("url: {}".format(url))
     h = httplib2.Http()
     result = json.loads(h.request(url, 'GET')[1])
+    logger.error("result: {}".format(result))
     # If there was an error in the access token info, abort.
     if result.get('error') is not None:
+        
         response = make_response(json.dumps(result.get('error')), 500)
         response.headers['Content-Type'] = 'application/json'
         return response
@@ -88,7 +110,7 @@ def gconnect():
     if result['issued_to'] != CLIENT_ID:
         response = make_response(
             json.dumps("Token's client ID does not match app's."), 401)
-        print "Token's client ID does not match app's."
+        logger.error("Token's client ID does not match app's.")
         response.headers['Content-Type'] = 'application/json'
         return response
 
@@ -131,29 +153,29 @@ def gconnect():
     output += ''' " style = "width: 300px; height: 300px;border-radius: 150px;
               -webkit-border-radius: 150px;-moz-border-radius: 150px;"> '''
     flash("you are now logged in as %s" % login_session['username'])
-    print "done!"
+    logger.debug("done!")
     return output
     # DISCONNECT - Revoke a current user's token and reset their login_session
 
 
 @app.route('/gdisconnect')
 def gdisconnect():
+    """ Logic to logout the user, after pressing the logout button 
+        on login page.
+    Returns:
+        Returns logout success page, if logout is successful,
+        else returns response page with appropriate error message"""
     access_token = login_session.get('access_token')
+    logger.debug("Access token: %s" % access_token)
     if access_token is None:
-        print 'Access Token is None'
         response = make_response(json.dumps(
             'Current user not connected.'), 401)
         response.headers['Content-Type'] = 'application/json'
         return response
-    print 'In gdisconnect access token is %s', access_token
-    print 'User name is: '
-    print login_session['username']
     url = '''https://accounts.google.com/o/oauth2/
              revoke?token=%s''' % login_session['access_token']
     h = httplib2.Http()
     result = h.request(url, 'GET')[0]
-    print 'result is '
-    print result
     if (result['status'] == '200') or ('username' in login_session):
         del login_session['access_token']
         del login_session['gplus_id']
@@ -206,11 +228,17 @@ def getUserID(email):
         user = session.query(User).filter_by(email=email).one()
         return user.id
     except Exception as err:
-        print('User not found: %s' % (str(err)))
+        logger.error('User not found: %s' % (str(err)))
         return None
 
-# decorator function to check if users are authorised
+
 def login_required(f):
+    """ Decorator function to check if the user is logged in.
+    Args:
+        f (function): parent function.
+    Returns:
+            parent function if the user is logged in, 
+            else redirects to login page."""
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if 'username' in login_session:
@@ -224,6 +252,12 @@ def login_required(f):
 # JSON APIs to view Catalog Information
 @app.route('/catalog/<int:catalog_id>/item/JSON')
 def allCatalogItemsJSON(catalog_id):
+    """ Get the JSON format of the required catalog, stored in the database.
+    Args:
+        catalog_id (int): id of the required catalog
+    Returns:
+        catalog_json (JSON): JSON format of the required catalog, stored
+        in the database"""
     catalog = session.query(Catalog).filter_by(id=catalog_id).one()
     items = session.query(CatalogItem).filter_by(
         catalog_id=catalog_id).all()
@@ -232,12 +266,24 @@ def allCatalogItemsJSON(catalog_id):
 
 @app.route('/catalog/<int:catalog_id>/item/<int:item_id>/JSON')
 def catalogItemJSON(catalog_id, item_id):
+    """ Get the JSON format of a specific item from a specific catalog, stored
+        in the database.
+    Args:
+        catalog_id (int), item_id (int): item_id of the required item 
+        from the catalog "catalog_id"
+    Returns:
+        catalog_json (JSON): JSON format of the required catalog, stored 
+        in the database"""
     Item = session.query(CatalogItem).filter_by(id=item_id).one()
     return jsonify(Item=Item.serialize)
 
 
 @app.route('/catalog/JSON')
 def catalogsJSON():
+    """ Get the JSON format of all the catalogs present in the database
+    Returns:
+        catalogs_json (JSON): JSON format of all the catalogs, stored 
+        in the database"""
     catalogs = session.query(Catalog).all()
     return jsonify(restaurants=[c.serialize for c in catalogs])
 
@@ -246,6 +292,10 @@ def catalogsJSON():
 @app.route('/')
 @app.route('/catalog/')
 def showCatalog():
+    """ Renders the page which lists all catalogs and items from the database.
+    Returns:
+        Returns catalog html template which lists all catalogs from 
+        the database and all the items."""
     catalogs = session.query(Catalog)
     items = session.query(CatalogItem)
     if 'username' not in login_session:
@@ -258,6 +308,12 @@ def showCatalog():
 # Show all items for the selected category
 @app.route('/catalog/<int:catalog_id>/items')
 def showCatalogItems(catalog_id):
+    """ Renders the page which lists all items for the selected catalog.
+    Args:
+        catalog_id (int): id of the selected catalog.
+    Returns:
+        Returns items_for_catalog html template which lists all items for 
+        the selected catalog."""
     catalogs = session.query(Catalog)
     catalog = session.query(Catalog).filter_by(id=catalog_id).one()
     items = session.query(CatalogItem).filter_by(catalog_id=catalog.id)
@@ -268,6 +324,13 @@ def showCatalogItems(catalog_id):
 # Show item description for the selected item
 @app.route('/catalog/<int:catalog_id>/item/<int:item_id>')
 def showCatalogItemDescription(catalog_id, item_id):
+    """ Renders the page which shows item description with option to edit
+        or delete for authorised users.
+    Args:
+        catalog_id (int), item_id (int): id of the selected catalog.
+    Returns:
+        Returns html template which shows item description with option to edit
+        or delete for authorised users."""
     catalog = session.query(Catalog).filter_by(id=catalog_id).one()
     item = session.query(CatalogItem).filter_by(
         catalog_id=catalog.id).filter_by(id=item_id).one()
@@ -279,10 +342,13 @@ def showCatalogItemDescription(catalog_id, item_id):
         return render_template('item_desc.html', item=item)
 
 
-# Edit the selected item
+# Add new item.
 @app.route('/catalog/item/new', methods=['GET', 'POST'])
 @login_required
 def addNewCatalogItem():
+    """ Renders the page for authorised users to create a new item.
+    Returns:
+        Returns html template where authorised users can create a new item."""
     catalogs = session.query(Catalog)
     if request.method == 'POST':
         newItem = CatalogItem(name=request.form['name'],
@@ -301,6 +367,13 @@ def addNewCatalogItem():
 @app.route('/catalog/<int:item_id>/edit', methods=['GET', 'POST'])
 @login_required
 def editCatalogItem(item_id):
+    """ Renders the page where the authorised user can edit the 
+        item created by him.
+    Args:
+        item_id (int): id of the selected item to edit.
+    Returns:
+        Returns html template where the authorised user can edit the 
+        item created by him."""
     catalogs = session.query(Catalog)
     editedItem = session.query(CatalogItem).filter_by(id=item_id).one()
     if editedItem.user_id != login_session['user_id']:
@@ -329,6 +402,13 @@ def editCatalogItem(item_id):
 @app.route('/catalog/<int:item_id>/delete', methods=['GET', 'POST'])
 @login_required
 def deleteCatalogItem(item_id):
+    """ Renders the page where the authorised user can delete the 
+        item created by him.
+    Args:
+        item_id (int): id of the selected item to delete.
+    Returns:
+        Returns html template where the authorised user is 
+        asked for confirmation to delete the item."""
     itemToDelete = session.query(CatalogItem).filter_by(id=item_id).one()
     if itemToDelete.user_id != login_session['user_id']:
         return '''<script>function myFunction() {alert('You are not
