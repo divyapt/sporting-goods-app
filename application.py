@@ -21,7 +21,7 @@ import requests
 from functools import wraps
 import logging
 import logging.config
-
+import os
 logging.config.fileConfig('logging.conf')
 
 # create logger
@@ -429,4 +429,4 @@ def deleteCatalogItem(item_id):
 if __name__ == '__main__':
     app.secret_key = 'super_secret_key'
     app.debug = True
-    app.run(host='0.0.0.0', port=environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=os.environ.get('PORT', 5000'))
