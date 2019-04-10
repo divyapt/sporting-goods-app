@@ -1,4 +1,5 @@
-# usr/bin/python -tt
+#!/usr/bin/env python3
+
 from catalog_database_setup import Base, Catalog, CatalogItem, User
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
